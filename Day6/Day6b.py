@@ -1,3 +1,6 @@
+import time
+
+start = time.time()
 def patrol(guard, obstacles, new_obstacle=None):
     if new_obstacle:
         obstacles.add(new_obstacle)
@@ -57,3 +60,7 @@ for y, x in pos:
 
 print(len(pos))
 print(possible_new_obstacles)
+
+end = time.time()
+print("The time of execution of above program is :",
+      (end-start), "s")
