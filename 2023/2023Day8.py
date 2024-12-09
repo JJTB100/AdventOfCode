@@ -1,4 +1,4 @@
-
+import math
 with open("input.txt", "r") as f:
     lines = f.read().splitlines()
 lines = [line.split(" = ") for line in lines]
@@ -9,19 +9,37 @@ for line in lines:
     line[1][0] = line[1][0][1:]
     line[1][1] = line[1][1][:-1]
 print(instructs)
-guide = {lines[i][0]: (lines[i][1][0], lines[i][1][1]) for i in range(len(lines))}
+guide = {lines[i][0]: (lines[i][1][0], lines[i][1][1])
+         for i in range(len(lines))}
 print(guide)
-def run():
+
+
+def doStep(start, char):
+    current = guide[start]
+    if char == "L":
+        return (current[0])
+    elif char == "R":
+        return (current[1])
+
+
+starting_locations = []
+for location in guide:
+    if location[-1] == "A":
+        starting_locations.append(location)
+queue = starting_locations.copy()
+
+
+AllSteps = []
+for location in queue:
+    i = 0
     steps = 0
-    current = guide["AAA"]
-    while current != guide["ZZZ"]:
-        for char in instructs:
-            steps += 1
-            if char == "L":
-                current = guide[current[0]]
-            elif char == "R":
-                current = guide[current[1]]
-            if current == guide["ZZZ"]:
-                return steps
-            
-print(run())
+    while location[-1] != "Z":
+        steps += 1
+        location = doStep(location, instructs[i])
+        if i == len(instructs)-1:
+            i = 0
+        else:
+            i += 1
+    AllSteps.append(steps)
+
+print(math.lcm(*AllSteps))
