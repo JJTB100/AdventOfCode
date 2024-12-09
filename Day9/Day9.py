@@ -9,7 +9,7 @@ empty = False
 i = 0
 for char in line:
     if empty:
-        disk += ("田"*int(char))
+        disk += ("😊"*int(char))
     else:
         disk += (chr(i)*int(char))
         i += 1
@@ -19,10 +19,10 @@ disk = list(disk)
 first_dot = 0
 
 while True:
-    while disk[-1] == "田":
+    while disk[-1] == "😊":
         disk.pop()
     try:
-        first_dot = disk.index("田", first_dot)
+        first_dot = disk.index("😊", first_dot)
     except:
         break
     disk[first_dot] = disk[-1]
