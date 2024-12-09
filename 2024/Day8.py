@@ -2,6 +2,7 @@ from itertools import combinations
 with open("input.txt", "r") as f:
     lines = f.read().splitlines()
 
+
 def run(p1=False):
     # get all antennas {name:[(), ()], name:[(), ()], ..}
     antennas = {}
@@ -37,10 +38,8 @@ def run(p1=False):
                 x = x - diffX
                 if p1:
                     break
-    
+
     return len(antinodes)
 
 
-
 print(run(True), run())
-

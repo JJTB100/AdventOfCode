@@ -2,7 +2,7 @@ import time
 
 with open("input.txt", "r") as f:
     line = f.read().strip()
-    
+
 start = time.time()
 
 disk = ""
@@ -44,7 +44,8 @@ while len(files) > 0:
         files.pop()
         continue
     # MOVE last file there
-    disk = disk[:first_dot] + files[-1][0]+ disk[first_dot + length_last:files[-1][1]] + "😊"*length_last + disk[files[-1][1]+length_last:]
+    disk = disk[:first_dot] + files[-1][0] + disk[first_dot +
+                                                  length_last:files[-1][1]] + "😊"*length_last + disk[files[-1][1]+length_last:]
 
     # pop the last file from the list
     files.pop()
