@@ -55,6 +55,7 @@ for i, c in enumerate(disk):
     if c == "😊":
         continue
     total += i * ord(c)
+    
 
 end = time.time()
 print(total)
