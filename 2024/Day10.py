@@ -11,7 +11,7 @@ def pr(s):
 
 sys.setrecursionlimit(10**6)
 infile = "input.in"
-# infile = "example.in"
+infile = "example.in"
 p1 = 0
 p2 = 0
 D = open(infile).read().strip().split("\n")
@@ -51,5 +51,6 @@ def solve(p2=False):
 
 p1 = solve()
 p2 = solve(True)
+
 pr(p1)
 pr(p2)
