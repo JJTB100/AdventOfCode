@@ -1,1 +1,1 @@
-py ./get_input.py --year 2024 --day 10 > input.in
+py ./get_input.py > input.in
