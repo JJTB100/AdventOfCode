@@ -32,16 +32,64 @@ def display(m):
     print()
 
 
-display(matrix)
+def extract_component(map, r, c, dr, dc):
+    if map[r][c] in ['#', '.']:
+        return []
+    ch = map[r][c]
+    map[r][c] = '.'
+    component = [(r, c, ch)]
+    component.extend(extract_component(map, r + dr, c + dc, dr, dc))
+    if ch == '[':
+        component.extend(extract_component(map, r, c + 1, dr, dc))
+    if ch == ']':
+        component.extend(extract_component(map, r, c - 1, dr, dc))
+    return component
+
+
+def validate(component, dr, dc):
+    for cell in component:
+        if matrix[cell[0] + dr][cell[1] + dc] != ".":
+            return False
+    return True
+
+
 for ins in instructions:
-    print(robot_coords)
-    print(ins, ":")
-    Move(ins)
-    display(matrix)
+    # Find the whole component that is being pushed, including the robot cell, and erase it (replacing with '.' on the map).
+    if ins == "<":
+        dr = 0
+        dc = -1
+    elif ins == ">":
+        dr = 0
+        dc = 1
+    elif ins == "^":
+        dr = -1
+        dc = 0
+    elif ins == "v":
+        dr = 1
+        dc = 0
+
+    component = extract_component(
+        matrix, robot_coords[0], robot_coords[1], dr, dc)
+    # Check if there is an empty cell in the moving direction for all cells in the component.
+    willMove = validate(component, dr, dc)
+
+    # If so, move all the cells in the given direction.
+    if willMove:
+        movedComp = []
+        for cell in component:
+            newcell = (cell[0] + dr, cell[1] + dc, cell[2])
+            movedComp.append(newcell)
+        component = movedComp
+        robot_coords = (robot_coords[0] + dr, robot_coords[1] + dc)
+
+    # Put the cells (that may or may not have moved) back onto the map.
+    for cell in component:
+        matrix[cell[0]][cell[1]] = cell[2]
 
 p1 = 0
 for r, row in enumerate(matrix):
     for c, char in enumerate(row):
-        if char == "O":
+        if char == "[":
             p1 += r * 100 + c
+display(matrix)
 print(p1)
