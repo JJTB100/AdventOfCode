@@ -23,7 +23,7 @@ def findAll(matrix: list[list[str]], chars: str):
 
 def Dijkstra(start, end):
     class node:
-        def __init__(self, y, x, working_value=10000000000000000000, dir=None):
+        def __init__(self, y, x, dir, working_value=10000000000000000000):
             self.y = y
             self.x = x
             self.working_value = working_value
@@ -31,61 +31,10 @@ def Dijkstra(start, end):
             self.prev = []
 
         def __eq__(self, other):
-            return self.y == other.y and self.x == other.x
+            return self.y == other.y and self.x == other.x and self.dir == other.dir
 
-        def __hash__(self):
-            return hash((self.y, self.x))
-
-    ## Create unvisited set ##
-    unvisited = []
-    visited = []
-    unvisited.append(node(start[0], start[1], working_value=0, dir=1))
-    adjs = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-
-    ## While we've not seen everything ##
-    while len(unvisited) != 0:
-        sorted(unvisited, key=lambda x: x.working_value)
-        current = unvisited.pop(0)
-        if current.y == end[0] and current.x == end[1]:
-            end_node = current
-        else:
-            ## Consider all of current's unvisited neighbours ##
-            for i in range(0, 3):
-                dy, dx = adjs[i]
-
-                neighbour = node(current.y + dy, current.x +
-                                 dx, dir=i)
-                if neighbour in visited:
-                    neighbour = visited[visited.index(neighbour)]
-                    neighbour.dir = i
-
-                if not (current.x == start[1] and current.y == start[0]) and neighbour in current.prev:
-                    continue
-                if matrix[neighbour.y][neighbour.x] == "#":
-                    continue
-
-                else:
-                    if int(current.dir) != int(neighbour.dir):
-                        possible_new_value = current.working_value + 1001
-                    else:
-                        possible_new_value = current.working_value + 1
-
-                    if int(possible_new_value) < int(neighbour.working_value):
-                        neighbour.working_value = possible_new_value
-                        neighbour.prev = [current]
-                        unvisited.append(neighbour)
-                        visited.append(neighbour)
-                        print(current.y, current.x, neighbour.working_value)
-                    elif int(possible_new_value) == int(neighbour.working_value) or int(possible_new_value) == int(neighbour.working_value-1000) or int(possible_new_value) == int(neighbour.working_value+1000):
-                        neighbour.prev.append(current)
-                        unvisited.append(neighbour)
-                        visited.append(neighbour)
-                        print(current.y, current.x, neighbour.working_value, "EQUAL")
-
-    print("P1:", end_node.working_value)
-
-   ## need to return the list of coords that are part of the path ##
-   ## backtrack through visited, if there are two options, go back through both ##
+        def __str__(self):
+            return f"({self.y}, {self.x}, {self.dir}, {self.working_value})"
 
     def backTrackBFS(end_node) -> int:
         paths = []
@@ -102,6 +51,75 @@ def Dijkstra(start, end):
                 Q.append(prev)
         return paths
 
+    def display(current):
+        paths = backTrackBFS(current)
+        for y in range(len(matrix)):
+            for x in range(len(matrix[0])):
+                contains = False
+                for el in paths:
+                    if el.y == y and el.x == x:
+                        contains = True
+                if contains:
+                    print("O", end="")
+                else:
+                    print(".", end="")
+            print()
+        print()
+
+    unvisited = []
+    visited = {}
+    # Push with priority
+    unvisited.append(node(start[0], start[1], 1, working_value=0))
+
+    adjs = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
+    while len(unvisited) != 0:
+        unvisited.sort(key=lambda x: x.working_value)
+        current = unvisited.pop(0)
+        """
+        print(f"{current}  ", end="")
+        for n in unvisited:
+            print(f"{n}", end="")
+        print()
+        """
+
+        for i in range(4):
+            dy, dx = adjs[i]
+
+            if (current.dir + 2) % 4 == i:
+                continue
+
+            if matrix[current.y + dy][current.x + dx] == "#":
+                continue
+
+            neighbour = visited.get(
+                (current.y + dy, current.x + dx, i), node(-1, -1, -1))
+            if neighbour.y == -1:
+                neighbour = node(current.y + dy, current.x + dx, i)
+                visited[(neighbour.y, neighbour.x,
+                         neighbour.dir)] = neighbour
+
+                # If we've changed direction
+            if current.dir != neighbour.dir:
+                possible_new_value = current.working_value + 1001
+            else:
+                possible_new_value = current.working_value + 1
+
+            # If we should replace the working value
+            if possible_new_value < neighbour.working_value:
+                neighbour.working_value = possible_new_value
+                neighbour.prev = [current]
+                unvisited.append(
+                    neighbour) if not neighbour in unvisited else 0
+
+            # P2: if we meet a path that has identical length
+            elif possible_new_value == neighbour.working_value:
+                neighbour.prev.append(current)
+
+    end_node = min((visited[(end[0], end[1], k)]
+                   for k in range(4) if (end[0], end[1], k) in visited), key=lambda x: x.working_value)
+    print("P1:", end_node.working_value)
+
     return backTrackBFS(end_node)
 
 
@@ -116,13 +134,13 @@ with open("input.in", "r") as f:
         matrix.append(row)
 
 ## Get coords of important features ##
-dots = findAll(matrix, ".")
 end_coords = findAll(matrix, "E").pop()
 start_coords = findAll(matrix, "S").pop()
 
 ## Do Dijkstra's Algorithm to find the shortest path ##
 paths = Dijkstra(start_coords, end_coords)
 
+p2 = 0
 for y in range(len(matrix)):
     for x in range(len(matrix[0])):
         contains = False
@@ -130,9 +148,10 @@ for y in range(len(matrix)):
             if el.y == y and el.x == x:
                 contains = True
         if contains:
+            p2 += 1
             print("O", end="")
         else:
             print(".", end="")
     print()
 
-print(len(set(paths)))
+print("P2:", p2)
