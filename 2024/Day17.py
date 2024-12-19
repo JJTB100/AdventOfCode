@@ -1,3 +1,4 @@
+import sys
 with open("input.in", "r") as f:
     lines = f.read().split("\n")
 
@@ -5,6 +6,7 @@ A = int(lines[0][12:])
 B = int(lines[1][12:])
 C = int(lines[2][12:])
 
+sys.setrecursionlimit(10**6)
 
 instructions = lines[4][9:].split(",")
 instructions = list(map(int, instructions))
