@@ -3,10 +3,10 @@
 from aoctools import *
 
 def get_fuel(number, total):
-    print(number, total)
     if number <= 0:
         return total - number
-    return get_fuel(number // 3 - 2, total + number // 3 - 2)
+    new = number // 3 - 2
+    return get_fuel(new, total + new)
 
 def main(aocd: AOCD):
     numbers = aocd.ilist

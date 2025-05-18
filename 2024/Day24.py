@@ -12,7 +12,7 @@ def process(op, op1, op2):
 
 
 highest_z = "z00"
-data = open("input.in").read().split("\n")
+data = open("2024/input.in").read().split("\n")
 for line in data:
     if ":" in line:
         wire, value = line.split(": ")
@@ -28,6 +28,7 @@ for op1, op, op2, res in operations:
     if res[0] == "z" and op != "XOR" and res != highest_z:
         wrong.add(res)
     if (
+        # If it is an XOR gate, then > one of the inputs must be A B or Carry, or the output must be z
         op == "XOR"
         and res[0] not in ["x", "y", "z"]
         and op1[0] not in ["x", "y", "z"]
