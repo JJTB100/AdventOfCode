@@ -12,7 +12,6 @@ for line in input:
         ans += (prev - 1) // 100 - (number - 1) // 100
     elif line[0] == "R":
         number += int(line[1:])
-        current_wraps = number // 100
         ans += number // 100 - prev // 100
         
 
