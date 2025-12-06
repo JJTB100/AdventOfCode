@@ -42,7 +42,7 @@ for col in range(len(data[0])):
             # Arithmetic row
             if c != ' ' and col != 0:
                 colMath = sum(currentCol) if mode == "+" else math.prod(currentCol)
-                print(f"{currentCol}, {mode=}, {col=}, {colMath=}")
+                #print(f"{currentCol}, {mode=}, {col=}, {colMath=}")
                 p2 += colMath
                 mode = c  
                 currentCol = []
@@ -54,6 +54,5 @@ for col in range(len(data[0])):
         currentCol.append(int(currentNum))
 
 colMath = sum(currentCol) if mode == "+" else math.prod(currentCol)
-print(f"{currentCol}, {mode=}, {col=}, {colMath=}")
 p2 += colMath
 print(p2)
